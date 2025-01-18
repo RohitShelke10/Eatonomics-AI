@@ -1,13 +1,9 @@
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Menu, X, MessageSquare, ShoppingCart, Utensils, User } from "lucide-react";
-
-// Define the type for navigation items
-interface NavItem {
-  name: string;
-  path: string;
-  icon?: React.ComponentType;
-}
+import { MessageSquare, ShoppingCart, Utensils, User } from "lucide-react";
+import { DesktopNav } from "./navigation/DesktopNav";
+import { MobileNav } from "./navigation/MobileNav";
+import type { NavItemType } from "./navigation/types";
 
 const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -16,11 +12,11 @@ const Navigation = () => {
   // Mock authentication - replace with actual auth logic
   const isAuthenticated = localStorage.getItem("token") !== null;
 
-  const publicNavItems: NavItem[] = [
+  const publicNavItems: NavItemType[] = [
     { name: "Home", path: "/" },
   ];
 
-  const privateNavItems: NavItem[] = [
+  const privateNavItems: NavItemType[] = [
     { name: "Meals", path: "/meals", icon: Utensils },
     { name: "Groceries", path: "/groceries", icon: ShoppingCart },
     { name: "Chat", path: "/chat", icon: MessageSquare },
@@ -41,96 +37,19 @@ const Navigation = () => {
             </Link>
           </div>
 
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-8">
-            {navItems.map((item) => (
-              <Link
-                key={item.path}
-                to={item.path}
-                className={`transition-all duration-200 px-3 py-2 rounded-md text-sm font-medium flex items-center gap-2 ${
-                  isActive(item.path)
-                    ? "text-primary bg-primary/10"
-                    : "text-gray-600 hover:text-primary hover:bg-primary/5"
-                }`}
-              >
-                {item.icon && <item.icon className="w-4 h-4" />}
-                {item.name}
-              </Link>
-            ))}
-            {!isAuthenticated && (
-              <div className="flex items-center space-x-4">
-                <Link
-                  to="/login"
-                  className="text-gray-600 hover:text-primary transition-colors"
-                >
-                  Log in
-                </Link>
-                <Link
-                  to="/signup"
-                  className="bg-primary text-white px-4 py-2 rounded-md hover:bg-primary/90 transition-colors"
-                >
-                  Sign up
-                </Link>
-              </div>
-            )}
-          </div>
+          <DesktopNav
+            navItems={navItems}
+            isActive={isActive}
+            isAuthenticated={isAuthenticated}
+          />
 
-          {/* Mobile menu button */}
-          <div className="md:hidden flex items-center">
-            <button
-              onClick={() => setIsOpen(!isOpen)}
-              className="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary"
-            >
-              {isOpen ? (
-                <X className="block h-6 w-6" aria-hidden="true" />
-              ) : (
-                <Menu className="block h-6 w-6" aria-hidden="true" />
-              )}
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* Mobile menu */}
-      <div
-        className={`md:hidden ${
-          isOpen ? "block animate-fade-in" : "hidden"
-        } border-b border-gray-100`}
-      >
-        <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-          {navItems.map((item) => (
-            <Link
-              key={item.path}
-              to={item.path}
-              className={`flex items-center gap-2 px-3 py-2 rounded-md text-base font-medium ${
-                isActive(item.path)
-                  ? "text-primary bg-primary/10"
-                  : "text-gray-600 hover:text-primary hover:bg-primary/5"
-              }`}
-              onClick={() => setIsOpen(false)}
-            >
-              {item.icon && <item.icon className="w-4 h-4" />}
-              {item.name}
-            </Link>
-          ))}
-          {!isAuthenticated && (
-            <div className="space-y-1">
-              <Link
-                to="/login"
-                className="block px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:text-primary hover:bg-primary/5"
-                onClick={() => setIsOpen(false)}
-              >
-                Log in
-              </Link>
-              <Link
-                to="/signup"
-                className="block px-3 py-2 rounded-md text-base font-medium bg-primary text-white hover:bg-primary/90"
-                onClick={() => setIsOpen(false)}
-              >
-                Sign up
-              </Link>
-            </div>
-          )}
+          <MobileNav
+            isOpen={isOpen}
+            setIsOpen={setIsOpen}
+            navItems={navItems}
+            isActive={isActive}
+            isAuthenticated={isAuthenticated}
+          />
         </div>
       </div>
     </nav>
