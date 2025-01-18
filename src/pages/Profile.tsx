@@ -5,11 +5,18 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Edit, LogOut, User } from "lucide-react";
 import { toast } from "sonner";
+import { handleApiResponse } from "@/utils/apiHandler";
+
+interface UserInfo {
+  name: string;
+  email: string;
+  phone: string;
+}
 
 const Profile = () => {
   const navigate = useNavigate();
   const [isEditing, setIsEditing] = useState(false);
-  const [userInfo, setUserInfo] = useState({
+  const [userInfo, setUserInfo] = useState<UserInfo>({
     name: "John Doe",
     email: "john@example.com",
     phone: "+1 234 567 8900"
@@ -21,7 +28,26 @@ const Profile = () => {
     navigate("/login");
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
+    // Example of how to use the API handler (commented out until API routes are added)
+    /*
+    const response = await fetch('/api/profile/update', {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(userInfo),
+    });
+
+    const result = await handleApiResponse<UserInfo>(response);
+    
+    if (!result.error) {
+      setIsEditing(false);
+      toast.success("Profile updated successfully");
+    }
+    */
+
+    // Temporary implementation until API routes are added
     setIsEditing(false);
     toast.success("Profile updated successfully");
   };
