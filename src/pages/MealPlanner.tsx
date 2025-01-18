@@ -5,9 +5,11 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/component
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 
+type WeekNumber = 1 | 2;
+
 const MealPlanner = () => {
   const [expandedMeals, setExpandedMeals] = useState<{ [key: string]: boolean }>({});
-  const [selectedWeek, setSelectedWeek] = useState<string>("1");
+  const [selectedWeek, setSelectedWeek] = useState<WeekNumber>(1);
   const [checkedItems, setCheckedItems] = useState<{ [key: string]: boolean }>({});
 
   // Mock data with expanded information and week numbers
@@ -103,14 +105,14 @@ const MealPlanner = () => {
     return groceries.reduce((total, item) => total + item.price, 0).toFixed(2);
   };
 
-  const currentWeekData = weeklyData[selectedWeek as keyof typeof weeklyData];
+  const currentWeekData = weeklyData[selectedWeek];
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-4xl">
       <div className="mb-6">
         <Select
-          value={selectedWeek}
-          onValueChange={setSelectedWeek}
+          value={selectedWeek.toString()}
+          onValueChange={(value) => setSelectedWeek(Number(value) as WeekNumber)}
         >
           <SelectTrigger className="w-[180px]">
             <SelectValue placeholder="Select week" />
