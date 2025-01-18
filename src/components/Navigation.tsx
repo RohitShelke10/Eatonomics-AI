@@ -13,6 +13,8 @@ const Navigation = () => {
 
   const publicNavItems: NavItemType[] = [
     { name: "Home", path: "/" },
+    { name: "Sign Up", path: "/signup" },
+    { name: "Login", path: "/login" },
   ];
 
   const privateNavItems: NavItemType[] = [
