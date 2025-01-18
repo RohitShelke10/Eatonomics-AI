@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { MessageSquare, ShoppingCart, Utensils, User } from "lucide-react";
+import { MessageSquare, User, Calendar } from "lucide-react";
 import { DesktopNav } from "./navigation/DesktopNav";
 import { MobileNav } from "./navigation/MobileNav";
 import type { NavItemType } from "./navigation/types";
@@ -9,7 +9,6 @@ const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
 
-  // Mock authentication - replace with actual auth logic
   const isAuthenticated = localStorage.getItem("token") !== null;
 
   const publicNavItems: NavItemType[] = [
@@ -17,8 +16,7 @@ const Navigation = () => {
   ];
 
   const privateNavItems: NavItemType[] = [
-    { name: "Meals", path: "/meals", icon: Utensils },
-    { name: "Groceries", path: "/groceries", icon: ShoppingCart },
+    { name: "Meal Planner", path: "/meal-planner", icon: Calendar },
     { name: "Chat", path: "/chat", icon: MessageSquare },
     { name: "Profile", path: "/profile", icon: User },
   ];

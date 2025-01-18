@@ -9,10 +9,11 @@ import Index from "./pages/Index";
 import SignUp from "./pages/SignUp";
 import Login from "./pages/Login";
 import Chat from "./pages/Chat";
+import Profile from "./pages/Profile";
+import MealPlanner from "./pages/MealPlanner";
 
 const queryClient = new QueryClient();
 
-// Mock authentication - replace with actual auth logic
 const isAuthenticated = () => {
   return localStorage.getItem("token") !== null;
 };
@@ -41,6 +42,22 @@ const App = () => (
               element={
                 <ProtectedRoute>
                   <Chat />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/profile"
+              element={
+                <ProtectedRoute>
+                  <Profile />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/meal-planner"
+              element={
+                <ProtectedRoute>
+                  <MealPlanner />
                 </ProtectedRoute>
               }
             />
