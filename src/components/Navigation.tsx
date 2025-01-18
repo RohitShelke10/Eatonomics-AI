@@ -13,7 +13,8 @@ const Navigation = () => {
     { name: "Home", path: "/" },
   ];
 
-  const privateNavItems = [
+  // Added icon property to the type
+  const privateNavItems: { name: string; path: string; icon?: React.ComponentType }[] = [
     { name: "Meals", path: "/meals", icon: Utensils },
     { name: "Groceries", path: "/groceries", icon: ShoppingCart },
     { name: "Chat", path: "/chat", icon: MessageSquare },
