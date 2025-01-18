@@ -13,17 +13,18 @@ import {
 import { Input } from "@/components/ui/input";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
 
 const formSchema = z.object({
-  username: z.string().min(3).max(50),
-  password: z.string().min(6),
+  username: z.string(),
+  password: z.string(),
 });
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
+  const navigate = useNavigate();
   
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -35,11 +36,12 @@ const Login = () => {
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      // TODO: Implement API call
-      console.log(values);
+      // For now, we'll just set a mock token and redirect
+      localStorage.setItem("token", "mock-token");
       toast.success("Logged in successfully!");
+      navigate("/chat");
     } catch (error) {
-      toast.error("Invalid username or password");
+      toast.error("Something went wrong");
     }
   };
 
