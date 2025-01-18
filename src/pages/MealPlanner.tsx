@@ -2,27 +2,34 @@ import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { List, Calendar, ChevronDown, ChevronUp } from "lucide-react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Checkbox } from "@/components/ui/checkbox";
 
 const MealPlanner = () => {
-  // Mock data with expanded information
+  const [expandedMeals, setExpandedMeals] = useState<{ [key: string]: boolean }>({});
+  const [selectedWeek, setSelectedWeek] = useState<string>("1");
+  const [checkedItems, setCheckedItems] = useState<{ [key: string]: boolean }>({});
+
+  // Mock data with expanded information and week numbers
   const weeklyData = {
-    meals: [
-      {
-        day: "Monday",
-        meal: "Grilled Chicken Salad",
-        nutrition: {
-          protein: "32g",
-          carbs: "15g",
-          fats: "12g",
-          quantity: "400g"
+    1: {
+      meals: [
+        {
+          day: "Monday",
+          meal: "Grilled Chicken Salad",
+          nutrition: {
+            protein: "32g",
+            carbs: "15g",
+            fats: "12g",
+            quantity: "400g"
+          },
+          ingredients: [
+            { name: "Chicken breast", quantity: "200g" },
+            { name: "Mixed greens", quantity: "100g" },
+            { name: "Olive oil", quantity: "15ml" }
+          ],
+          recipe: "1. Season chicken breast\n2. Grill for 6-8 minutes each side\n3. Slice and serve over mixed greens\n4. Drizzle with olive oil"
         },
-        ingredients: [
-          { name: "Chicken breast", quantity: "200g" },
-          { name: "Mixed greens", quantity: "100g" },
-          { name: "Olive oil", quantity: "15ml" }
-        ],
-        recipe: "1. Season chicken breast\n2. Grill for 6-8 minutes each side\n3. Slice and serve over mixed greens\n4. Drizzle with olive oil"
-      },
       {
         day: "Tuesday",
         meal: "Vegetable Stir Fry",
@@ -55,21 +62,28 @@ const MealPlanner = () => {
         ],
         recipe: "1. Preheat oven to 400°F\n2. Season salmon\n3. Bake for 12-15 minutes"
       }
-    ],
-    groceries: [
-      { name: "Chicken breast", price: 8.99 },
-      { name: "Mixed greens", price: 3.99 },
-      { name: "Olive oil", price: 6.99 },
-      { name: "Mixed vegetables", price: 4.99 },
-      { name: "Tofu", price: 2.99 },
-      { name: "Soy sauce", price: 3.49 },
-      { name: "Salmon fillet", price: 12.99 },
-      { name: "Lemon", price: 0.99 },
-      { name: "Herbs", price: 1.99 }
-    ]
+      ],
+      groceries: [
+        { name: "Chicken breast", price: 8.99 },
+        { name: "Mixed greens", price: 3.99 },
+        { name: "Olive oil", price: 6.99 },
+        { name: "Mixed vegetables", price: 4.99 },
+        { name: "Tofu", price: 2.99 },
+        { name: "Soy sauce", price: 3.49 },
+        { name: "Salmon fillet", price: 12.99 },
+        { name: "Lemon", price: 0.99 },
+        { name: "Herbs", price: 1.99 }
+      ]
+    },
+    2: {
+      meals: [
+        // ... Similar structure for week 2
+      ],
+      groceries: [
+        // ... Similar structure for week 2
+      ]
+    }
   };
-
-  const [expandedMeals, setExpandedMeals] = useState<{ [key: string]: boolean }>({});
 
   const toggleMeal = (day: string) => {
     setExpandedMeals(prev => ({
@@ -78,8 +92,39 @@ const MealPlanner = () => {
     }));
   };
 
+  const toggleGroceryItem = (itemName: string) => {
+    setCheckedItems(prev => ({
+      ...prev,
+      [itemName]: !prev[itemName]
+    }));
+  };
+
+  const calculateTotal = (groceries: Array<{ name: string; price: number }>) => {
+    return groceries.reduce((total, item) => total + item.price, 0).toFixed(2);
+  };
+
+  const currentWeekData = weeklyData[selectedWeek as keyof typeof weeklyData];
+
   return (
     <div className="container mx-auto px-4 py-8 max-w-4xl">
+      <div className="mb-6">
+        <Select
+          value={selectedWeek}
+          onValueChange={setSelectedWeek}
+        >
+          <SelectTrigger className="w-[180px]">
+            <SelectValue placeholder="Select week" />
+          </SelectTrigger>
+          <SelectContent>
+            {Object.keys(weeklyData).map((week) => (
+              <SelectItem key={week} value={week}>
+                Week {week}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
+
       <div className="space-y-8">
         <Card className="shadow-lg">
           <CardHeader>
@@ -90,7 +135,7 @@ const MealPlanner = () => {
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              {weeklyData.meals.map((item, index) => (
+              {currentWeekData?.meals.map((item, index) => (
                 <Collapsible
                   key={index}
                   open={expandedMeals[item.day]}
@@ -150,16 +195,29 @@ const MealPlanner = () => {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="grid gap-3">
-              {weeklyData.groceries.map((item, index) => (
+            <div className="space-y-3">
+              {currentWeekData?.groceries.map((item, index) => (
                 <div
                   key={index}
                   className="flex items-center justify-between p-4 bg-muted rounded-lg"
                 >
-                  <span>{item.name}</span>
+                  <div className="flex items-center gap-3">
+                    <Checkbox
+                      checked={checkedItems[item.name]}
+                      onCheckedChange={() => toggleGroceryItem(item.name)}
+                    />
+                    <span className={checkedItems[item.name] ? "line-through" : ""}>
+                      {item.name}
+                    </span>
+                  </div>
                   <span className="font-medium">${item.price.toFixed(2)}</span>
                 </div>
               ))}
+              <div className="flex justify-end pt-4 border-t">
+                <span className="font-semibold">
+                  Total: ${calculateTotal(currentWeekData?.groceries || [])}
+                </span>
+              </div>
             </div>
           </CardContent>
         </Card>
