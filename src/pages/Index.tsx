@@ -5,6 +5,14 @@ import { Link } from "react-router-dom";
 const Index = () => {
   return (
     <div className="min-h-screen bg-accent pt-16">
+      <div className="w-full bg-primary/5 border-y border-primary/10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+          <p className="text-center text-primary font-medium">
+            🎉 Welcome to Healthify - Your personal health assistant is ready to help!
+          </p>
+        </div>
+      </div>
+      
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="pt-20 pb-12 md:pt-40 md:pb-20">
           {/* Hero Section */}

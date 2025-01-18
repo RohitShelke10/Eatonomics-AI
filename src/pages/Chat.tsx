@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { MessageSquare, Send, Smile } from "lucide-react";
+import { MessageSquare, Send, Mic, MicOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
@@ -11,16 +11,21 @@ const Chat = () => {
     { id: 1, text: "Hello! How can I help you today?", isBot: true },
   ]);
   const [isTyping, setIsTyping] = useState(false);
+  const [isRecording, setIsRecording] = useState(false);
   const { toast } = useToast();
+
+  const defaultPrompts = [
+    "What's a healthy breakfast?",
+    "Help me plan my weekly meals",
+    "Suggest a quick workout routine",
+  ];
 
   const handleSendMessage = (e: React.FormEvent) => {
     e.preventDefault();
     if (message.trim()) {
-      // Add user message
       setMessages([...messages, { id: Date.now(), text: message, isBot: false }]);
       setMessage("");
       
-      // Simulate bot typing
       setIsTyping(true);
       setTimeout(() => {
         setIsTyping(false);
@@ -31,7 +36,6 @@ const Chat = () => {
         }]);
       }, 1500);
 
-      // Show toast notification
       toast({
         title: "Message sent",
         description: "Your message has been sent successfully!",
@@ -39,12 +43,20 @@ const Chat = () => {
     }
   };
 
+  const toggleVoiceRecording = () => {
+    setIsRecording(!isRecording);
+    toast({
+      title: isRecording ? "Voice recording stopped" : "Voice recording started",
+      description: "This feature will be implemented soon!",
+    });
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="min-h-screen bg-accent pt-16 px-4"
+      className="min-h-screen bg-accent pt-20 px-4" // Updated pt-16 to pt-20
     >
       <div className="max-w-4xl mx-auto bg-background rounded-lg shadow-lg h-[calc(100vh-8rem)]">
         <div className="h-full flex flex-col">
@@ -63,10 +75,10 @@ const Chat = () => {
                 className={`flex ${msg.isBot ? "justify-start" : "justify-end"}`}
               >
                 <div
-                  className={`max-w-[80%] p-3 rounded-lg ${
+                  className={`max-w-[80%] p-3 rounded-lg transition-all duration-200 hover:scale-[1.02] ${
                     msg.isBot
-                      ? "bg-muted text-foreground"
-                      : "bg-primary text-primary-foreground"
+                      ? "bg-muted text-foreground hover:bg-muted/90"
+                      : "bg-primary text-primary-foreground hover:bg-primary/90"
                   }`}
                 >
                   {msg.text}
@@ -90,19 +102,32 @@ const Chat = () => {
             )}
           </div>
           
-          <form onSubmit={handleSendMessage} className="p-4 border-t">
-            <div className="flex gap-2">
+          <div className="p-4 border-t space-y-4">
+            <div className="flex flex-wrap gap-2 mb-4">
+              {defaultPrompts.map((prompt, index) => (
+                <button
+                  key={index}
+                  onClick={() => setMessage(prompt)}
+                  className="text-sm px-3 py-1 rounded-full bg-accent hover:bg-accent/80 transition-colors duration-200"
+                >
+                  {prompt}
+                </button>
+              ))}
+            </div>
+            
+            <form onSubmit={handleSendMessage} className="flex gap-2">
               <Button
                 type="button"
                 variant="ghost"
                 size="icon"
                 className="flex-none"
-                onClick={() => toast({
-                  title: "Emoji picker",
-                  description: "Emoji picker is not implemented yet!",
-                })}
+                onClick={toggleVoiceRecording}
               >
-                <Smile className="w-5 h-5" />
+                {isRecording ? (
+                  <MicOff className="w-5 h-5 text-destructive" />
+                ) : (
+                  <Mic className="w-5 h-5" />
+                )}
               </Button>
               <Input
                 value={message}
@@ -114,8 +139,8 @@ const Chat = () => {
                 <Send className="w-4 h-4" />
                 <span className="sr-only">Send message</span>
               </Button>
-            </div>
-          </form>
+            </form>
+          </div>
         </div>
       </div>
     </motion.div>
