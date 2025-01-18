@@ -6,10 +6,26 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Edit, LogOut, User } from "lucide-react";
 import { toast } from "sonner";
 import { handleApiResponse } from "@/utils/apiHandler";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface UserInfo {
-  name: string;
+  username: string;
   email: string;
+  age: string;
+  sex: string;
+  height: string;
+  weight: string;
+  dietPreference: string;
+  allergies: string;
+  activityLevel: string;
+  goal: string;
+  medicalConditions: string;
   phone: string;
 }
 
@@ -17,9 +33,18 @@ const Profile = () => {
   const navigate = useNavigate();
   const [isEditing, setIsEditing] = useState(false);
   const [userInfo, setUserInfo] = useState<UserInfo>({
-    name: "John Doe",
+    username: "John Doe",
     email: "john@example.com",
-    phone: "+1 234 567 8900"
+    phone: "+1 234 567 8900",
+    age: "25",
+    sex: "Non-Binary",
+    height: "170",
+    weight: "70",
+    dietPreference: "Omnivore",
+    allergies: "None",
+    activityLevel: "moderate",
+    goal: "weight_loss",
+    medicalConditions: "None"
   });
 
   const handleLogout = () => {
@@ -71,11 +96,11 @@ const Profile = () => {
         <CardContent className="space-y-6">
           <div className="space-y-4">
             <div className="space-y-2">
-              <label className="text-sm font-medium">Name</label>
+              <label className="text-sm font-medium">Username</label>
               <Input
-                value={userInfo.name}
+                value={userInfo.username}
                 onChange={(e) =>
-                  setUserInfo({ ...userInfo, name: e.target.value })
+                  setUserInfo({ ...userInfo, username: e.target.value })
                 }
                 disabled={!isEditing}
               />
@@ -99,6 +124,152 @@ const Profile = () => {
                 onChange={(e) =>
                   setUserInfo({ ...userInfo, phone: e.target.value })
                 }
+                disabled={!isEditing}
+              />
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Age</label>
+                <Input
+                  type="number"
+                  value={userInfo.age}
+                  onChange={(e) =>
+                    setUserInfo({ ...userInfo, age: e.target.value })
+                  }
+                  disabled={!isEditing}
+                />
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Sex</label>
+                <Select
+                  value={userInfo.sex}
+                  onValueChange={(value) =>
+                    setUserInfo({ ...userInfo, sex: value })
+                  }
+                  disabled={!isEditing}
+                >
+                  <SelectTrigger className="bg-white">
+                    <SelectValue placeholder="Select sex" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Male">Male</SelectItem>
+                    <SelectItem value="Female">Female</SelectItem>
+                    <SelectItem value="Non-Binary">Non-Binary</SelectItem>
+                    <SelectItem value="Transgender">Transgender</SelectItem>
+                    <SelectItem value="Cisgender">Cisgender</SelectItem>
+                    <SelectItem value="Heterosexual">Heterosexual</SelectItem>
+                    <SelectItem value="Homosexual">Homosexual</SelectItem>
+                    <SelectItem value="Bisexual">Bisexual</SelectItem>
+                    <SelectItem value="Asexual">Asexual</SelectItem>
+                    <SelectItem value="Pansexual">Pansexual</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Height (cm)</label>
+                <Input
+                  type="number"
+                  value={userInfo.height}
+                  onChange={(e) =>
+                    setUserInfo({ ...userInfo, height: e.target.value })
+                  }
+                  disabled={!isEditing}
+                />
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Weight (kg)</label>
+                <Input
+                  type="number"
+                  value={userInfo.weight}
+                  onChange={(e) =>
+                    setUserInfo({ ...userInfo, weight: e.target.value })
+                  }
+                  disabled={!isEditing}
+                />
+              </div>
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Diet Preference</label>
+              <Select
+                value={userInfo.dietPreference}
+                onValueChange={(value) =>
+                  setUserInfo({ ...userInfo, dietPreference: value })
+                }
+                disabled={!isEditing}
+              >
+                <SelectTrigger className="bg-white">
+                  <SelectValue placeholder="Select diet" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Omnivore">Omnivore</SelectItem>
+                  <SelectItem value="Vegetarian">Vegetarian</SelectItem>
+                  <SelectItem value="Vegan">Vegan</SelectItem>
+                  <SelectItem value="Gluten-Free">Gluten-Free</SelectItem>
+                  <SelectItem value="Halal">Halal</SelectItem>
+                  <SelectItem value="Kosher">Kosher</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Allergies</label>
+              <Input
+                value={userInfo.allergies}
+                onChange={(e) =>
+                  setUserInfo({ ...userInfo, allergies: e.target.value })
+                }
+                placeholder="e.g., nuts, dairy"
+                disabled={!isEditing}
+              />
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Activity Level</label>
+              <Select
+                value={userInfo.activityLevel}
+                onValueChange={(value) =>
+                  setUserInfo({ ...userInfo, activityLevel: value })
+                }
+                disabled={!isEditing}
+              >
+                <SelectTrigger className="bg-white">
+                  <SelectValue placeholder="Select activity level" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="sedentary">Sedentary</SelectItem>
+                  <SelectItem value="light">Light</SelectItem>
+                  <SelectItem value="moderate">Moderate</SelectItem>
+                  <SelectItem value="very_active">Very Active</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Goal</label>
+              <Select
+                value={userInfo.goal}
+                onValueChange={(value) =>
+                  setUserInfo({ ...userInfo, goal: value })
+                }
+                disabled={!isEditing}
+              >
+                <SelectTrigger className="bg-white">
+                  <SelectValue placeholder="Select goal" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="weight_loss">Weight Loss</SelectItem>
+                  <SelectItem value="muscle_gain">Muscle Gain</SelectItem>
+                  <SelectItem value="both">Both</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Medical Conditions</label>
+              <Input
+                value={userInfo.medicalConditions}
+                onChange={(e) =>
+                  setUserInfo({ ...userInfo, medicalConditions: e.target.value })
+                }
+                placeholder="e.g., diabetes, hypertension"
                 disabled={!isEditing}
               />
             </div>
