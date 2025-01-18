@@ -20,6 +20,8 @@ import {
 } from "@/components/ui/select";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
+import { Eye, EyeOff } from "lucide-react";
+import { useState } from "react";
 
 const formSchema = z.object({
   username: z.string().min(3).max(50),
@@ -29,10 +31,28 @@ const formSchema = z.object({
     const num = parseInt(val);
     return num >= 12 && num <= 110;
   }, "Age must be between 12 and 110"),
-  sex: z.enum(["male", "female", "other"]),
+  sex: z.enum([
+    "Male",
+    "Female",
+    "Non-Binary",
+    "Transgender",
+    "Cisgender",
+    "Heterosexual",
+    "Homosexual",
+    "Bisexual",
+    "Asexual",
+    "Pansexual"
+  ]),
   height: z.string(),
   weight: z.string(),
-  dietPreference: z.enum(["vegan", "vegetarian", "omnivore", "pescatarian"]),
+  dietPreference: z.enum([
+    "Omnivore",
+    "Vegetarian",
+    "Vegan",
+    "Gluten-Free",
+    "Halal",
+    "Kosher"
+  ]),
   allergies: z.string(),
   activityLevel: z.enum(["sedentary", "light", "moderate", "very_active"]),
   goal: z.enum(["weight_loss", "muscle_gain", "both"]),
@@ -40,6 +60,8 @@ const formSchema = z.object({
 });
 
 const SignUp = () => {
+  const [showPassword, setShowPassword] = useState(false);
+  
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -47,10 +69,10 @@ const SignUp = () => {
       email: "",
       password: "",
       age: "",
-      sex: "other",
+      sex: "Non-Binary",
       height: "",
       weight: "",
-      dietPreference: "omnivore",
+      dietPreference: "Omnivore",
       allergies: "",
       activityLevel: "moderate",
       goal: "weight_loss",
@@ -113,9 +135,25 @@ const SignUp = () => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Password</FormLabel>
-                  <FormControl>
-                    <Input type="password" {...field} />
-                  </FormControl>
+                  <div className="relative">
+                    <FormControl>
+                      <Input 
+                        type={showPassword ? "text" : "password"} 
+                        {...field} 
+                      />
+                    </FormControl>
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-3 top-2.5 text-gray-500 hover:text-gray-700"
+                    >
+                      {showPassword ? (
+                        <EyeOff className="h-5 w-5" />
+                      ) : (
+                        <Eye className="h-5 w-5" />
+                      )}
+                    </button>
+                  </div>
                   <FormMessage />
                 </FormItem>
               )}
@@ -140,16 +178,26 @@ const SignUp = () => {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Sex</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <Select 
+                      onValueChange={field.onChange} 
+                      defaultValue={field.value}
+                    >
                       <FormControl>
-                        <SelectTrigger>
+                        <SelectTrigger className="bg-white">
                           <SelectValue placeholder="Select sex" />
                         </SelectTrigger>
                       </FormControl>
-                      <SelectContent>
-                        <SelectItem value="male">Male</SelectItem>
-                        <SelectItem value="female">Female</SelectItem>
-                        <SelectItem value="other">Other</SelectItem>
+                      <SelectContent className="bg-white">
+                        <SelectItem value="Male">Male</SelectItem>
+                        <SelectItem value="Female">Female</SelectItem>
+                        <SelectItem value="Non-Binary">Non-Binary</SelectItem>
+                        <SelectItem value="Transgender">Transgender</SelectItem>
+                        <SelectItem value="Cisgender">Cisgender</SelectItem>
+                        <SelectItem value="Heterosexual">Heterosexual</SelectItem>
+                        <SelectItem value="Homosexual">Homosexual</SelectItem>
+                        <SelectItem value="Bisexual">Bisexual</SelectItem>
+                        <SelectItem value="Asexual">Asexual</SelectItem>
+                        <SelectItem value="Pansexual">Pansexual</SelectItem>
                       </SelectContent>
                     </Select>
                     <FormMessage />
@@ -191,17 +239,22 @@ const SignUp = () => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Diet Preference</FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <Select 
+                    onValueChange={field.onChange} 
+                    defaultValue={field.value}
+                  >
                     <FormControl>
-                      <SelectTrigger>
+                      <SelectTrigger className="bg-white">
                         <SelectValue placeholder="Select diet" />
                       </SelectTrigger>
                     </FormControl>
-                    <SelectContent>
-                      <SelectItem value="vegan">Vegan</SelectItem>
-                      <SelectItem value="vegetarian">Vegetarian</SelectItem>
-                      <SelectItem value="omnivore">Omnivore</SelectItem>
-                      <SelectItem value="pescatarian">Pescatarian</SelectItem>
+                    <SelectContent className="bg-white">
+                      <SelectItem value="Omnivore">Omnivore</SelectItem>
+                      <SelectItem value="Vegetarian">Vegetarian</SelectItem>
+                      <SelectItem value="Vegan">Vegan</SelectItem>
+                      <SelectItem value="Gluten-Free">Gluten-Free</SelectItem>
+                      <SelectItem value="Halal">Halal</SelectItem>
+                      <SelectItem value="Kosher">Kosher</SelectItem>
                     </SelectContent>
                   </Select>
                   <FormMessage />
@@ -229,11 +282,11 @@ const SignUp = () => {
                   <FormLabel>Activity Level</FormLabel>
                   <Select onValueChange={field.onChange} defaultValue={field.value}>
                     <FormControl>
-                      <SelectTrigger>
+                      <SelectTrigger className="bg-white">
                         <SelectValue placeholder="Select activity level" />
                       </SelectTrigger>
                     </FormControl>
-                    <SelectContent>
+                    <SelectContent className="bg-white">
                       <SelectItem value="sedentary">Sedentary</SelectItem>
                       <SelectItem value="light">Light</SelectItem>
                       <SelectItem value="moderate">Moderate</SelectItem>
@@ -252,11 +305,11 @@ const SignUp = () => {
                   <FormLabel>Goal</FormLabel>
                   <Select onValueChange={field.onChange} defaultValue={field.value}>
                     <FormControl>
-                      <SelectTrigger>
+                      <SelectTrigger className="bg-white">
                         <SelectValue placeholder="Select goal" />
                       </SelectTrigger>
                     </FormControl>
-                    <SelectContent>
+                    <SelectContent className="bg-white">
                       <SelectItem value="weight_loss">Weight Loss</SelectItem>
                       <SelectItem value="muscle_gain">Muscle Gain</SelectItem>
                       <SelectItem value="both">Both</SelectItem>
@@ -284,6 +337,12 @@ const SignUp = () => {
             </Button>
           </form>
         </Form>
+        <p className="text-center mt-4 text-sm text-muted-foreground">
+          Already have an account?{" "}
+          <Link to="/login" className="text-primary hover:underline">
+            Log in
+          </Link>
+        </p>
       </div>
     </motion.div>
   );

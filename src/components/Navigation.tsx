@@ -1,17 +1,26 @@
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Menu, X } from "lucide-react";
+import { Menu, X, MessageSquare, ShoppingCart, Utensils, User } from "lucide-react";
 
 const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
 
-  const navItems = [
+  // Mock authentication - replace with actual auth logic
+  const isAuthenticated = localStorage.getItem("token") !== null;
+
+  const publicNavItems = [
     { name: "Home", path: "/" },
-    { name: "Meals", path: "/meals" },
-    { name: "Groceries", path: "/groceries" },
-    { name: "Profile", path: "/profile" },
   ];
+
+  const privateNavItems = [
+    { name: "Meals", path: "/meals", icon: Utensils },
+    { name: "Groceries", path: "/groceries", icon: ShoppingCart },
+    { name: "Chat", path: "/chat", icon: MessageSquare },
+    { name: "Profile", path: "/profile", icon: User },
+  ];
+
+  const navItems = isAuthenticated ? privateNavItems : publicNavItems;
 
   const isActive = (path: string) => location.pathname === path;
 
@@ -31,15 +40,32 @@ const Navigation = () => {
               <Link
                 key={item.path}
                 to={item.path}
-                className={`transition-all duration-200 px-3 py-2 rounded-md text-sm font-medium ${
+                className={`transition-all duration-200 px-3 py-2 rounded-md text-sm font-medium flex items-center gap-2 ${
                   isActive(item.path)
                     ? "text-primary bg-primary/10"
                     : "text-gray-600 hover:text-primary hover:bg-primary/5"
                 }`}
               >
+                {item.icon && <item.icon className="w-4 h-4" />}
                 {item.name}
               </Link>
             ))}
+            {!isAuthenticated && (
+              <div className="flex items-center space-x-4">
+                <Link
+                  to="/login"
+                  className="text-gray-600 hover:text-primary transition-colors"
+                >
+                  Log in
+                </Link>
+                <Link
+                  to="/signup"
+                  className="bg-primary text-white px-4 py-2 rounded-md hover:bg-primary/90 transition-colors"
+                >
+                  Sign up
+                </Link>
+              </div>
+            )}
           </div>
 
           {/* Mobile menu button */}
@@ -69,16 +95,35 @@ const Navigation = () => {
             <Link
               key={item.path}
               to={item.path}
-              className={`block px-3 py-2 rounded-md text-base font-medium ${
+              className={`flex items-center gap-2 px-3 py-2 rounded-md text-base font-medium ${
                 isActive(item.path)
                   ? "text-primary bg-primary/10"
                   : "text-gray-600 hover:text-primary hover:bg-primary/5"
               }`}
               onClick={() => setIsOpen(false)}
             >
+              {item.icon && <item.icon className="w-4 h-4" />}
               {item.name}
             </Link>
           ))}
+          {!isAuthenticated && (
+            <div className="space-y-1">
+              <Link
+                to="/login"
+                className="block px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:text-primary hover:bg-primary/5"
+                onClick={() => setIsOpen(false)}
+              >
+                Log in
+              </Link>
+              <Link
+                to="/signup"
+                className="block px-3 py-2 rounded-md text-base font-medium bg-primary text-white hover:bg-primary/90"
+                onClick={() => setIsOpen(false)}
+              >
+                Sign up
+              </Link>
+            </div>
+          )}
         </div>
       </div>
     </nav>
