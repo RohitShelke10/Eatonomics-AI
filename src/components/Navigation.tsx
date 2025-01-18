@@ -2,6 +2,13 @@ import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Menu, X, MessageSquare, ShoppingCart, Utensils, User } from "lucide-react";
 
+// Define the type for navigation items
+interface NavItem {
+  name: string;
+  path: string;
+  icon?: React.ComponentType;
+}
+
 const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
@@ -9,12 +16,11 @@ const Navigation = () => {
   // Mock authentication - replace with actual auth logic
   const isAuthenticated = localStorage.getItem("token") !== null;
 
-  const publicNavItems = [
+  const publicNavItems: NavItem[] = [
     { name: "Home", path: "/" },
   ];
 
-  // Added icon property to the type
-  const privateNavItems: { name: string; path: string; icon?: React.ComponentType }[] = [
+  const privateNavItems: NavItem[] = [
     { name: "Meals", path: "/meals", icon: Utensils },
     { name: "Groceries", path: "/groceries", icon: ShoppingCart },
     { name: "Chat", path: "/chat", icon: MessageSquare },
