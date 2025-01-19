@@ -45,7 +45,13 @@ const Chat = () => {
         // Add the bot's response to the chat
         setMessages((prev) => [
           ...prev,
-          { id: Date.now() + 1, text: data.reply || "Sorry, something went wrong.", isBot: true },
+          { id: Date.now() + 1, text: data.reply || `Your Personalized Meal Plan is on the Way! 🍎🍽️
+Hi there!
+I’m thrilled to see you taking the first step toward healthier eating. Let’s be honest—eating healthy isn’t always easy, and eating healthy on a budget? That’s a whole new level of challenge. But don’t worry, you’re not in this alone!
+I’m working hard to craft a meal plan tailored just for you, along with a custom grocery list designed to make sticking to your goals simple and stress-free. You’ll find everything you need waiting for you on the Meal Planner tab soon.
+So sit tight and get ready to enjoy a delicious, healthy, and budget-friendly journey. You've got this, and I’ve got your back!
+Cheers to healthy eating,
+Your Meal Planner AI 🍳🌱`, isBot: true },
         ]);
       } catch (error) {
         console.error("API call failed:", error);

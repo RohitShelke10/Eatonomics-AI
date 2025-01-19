@@ -8,7 +8,7 @@ const Index = () => {
       <div className="w-full bg-primary/5 border-y border-primary/10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <p className="text-center text-primary font-medium">
-            🎉 Welcome to Healthify - Your personal health assistant is ready to help!
+            🎉 Welcome to Eatonomics AI - Your personal health assistant is ready to help!
           </p>
         </div>
       </div>

@@ -42,14 +42,14 @@ export const MealCard = ({meal_name, nutritional_info, ingredients, recipe }: Me
           <div>
             <h4 className="font-semibold mb-2">Nutrition Info</h4>
             <div className="grid grid-cols-2 gap-2">
-            <div>
+            {/* <div>
               {nutritional_info.map((macro, index) => (
                 <div key={index} className="flex justify-between">
                   <div>{macro.macro}</div>
                   <div>{macro.quantity}</div>
                 </div>
               ))}
-            </div>
+            </div> */}
             </div>
           </div>
           <div>
