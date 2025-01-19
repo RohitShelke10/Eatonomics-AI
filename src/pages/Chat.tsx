@@ -13,35 +13,58 @@ const Chat = () => {
   const [isTyping, setIsTyping] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
   const { toast } = useToast();
+  const token = localStorage.getItem("token")
 
   const defaultPrompts = [
-    "What's a healthy breakfast?",
-    "Help me plan my weekly meals",
-    "Suggest a quick workout routine",
+    "Give me a week's meal plan according to my goal under $100"
   ];
 
-  const handleSendMessage = (e: React.FormEvent) => {
+  const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
+  
     if (message.trim()) {
-      setMessages([...messages, { id: Date.now(), text: message, isBot: false }]);
+      // Add the user's message to the chat
+      const userMessage = { id: Date.now(), text: message, isBot: false };
+      setMessages((prev) => [...prev, userMessage]);
       setMessage("");
-      
+  
+      // Show typing indicator
       setIsTyping(true);
-      setTimeout(() => {
+  
+      try {
+        // Make the API call
+        const response = await fetch("http://localhost:8000/chat/reply", {
+          method: "POST",
+          headers: { "Content-Type": "application/json",
+            'Authorization': `Bearer ${token}`},
+          body: JSON.stringify({"message": message}),
+        });
+  
+        const data = await response.json();
+  
+        // Add the bot's response to the chat
+        setMessages((prev) => [
+          ...prev,
+          { id: Date.now() + 1, text: data.reply || "Sorry, something went wrong.", isBot: true },
+        ]);
+      } catch (error) {
+        console.error("API call failed:", error);
+        setMessages((prev) => [
+          ...prev,
+          { id: Date.now() + 1, text: "Oops! I couldn't fetch a response. Please try again.", isBot: true },
+        ]);
+      } finally {
+        // Remove typing indicator
         setIsTyping(false);
-        setMessages(prev => [...prev, {
-          id: Date.now() + 1,
-          text: "Thank you for your message! I'm here to assist you with your health and nutrition questions.",
-          isBot: true
-        }]);
-      }, 1500);
-
+      }
+  
       toast({
         title: "Message sent",
         description: "Your message has been sent successfully!",
       });
     }
   };
+  
 
   const toggleVoiceRecording = () => {
     setIsRecording(!isRecording);
