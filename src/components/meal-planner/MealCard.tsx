@@ -3,26 +3,23 @@ import { ChevronDown, ChevronUp } from "lucide-react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 
 interface Ingredient {
-  name: string;
+  ingredient_name: string;
   quantity: string;
 }
 
 interface Nutrition {
-  protein: string;
-  carbs: string;
-  fats: string;
+  macro: string;
   quantity: string;
 }
 
 interface MealCardProps {
-  day: string;
-  meal: string;
-  nutrition: Nutrition;
+  meal_name: string;
+  nutritional_info: Nutrition[];
   ingredients: Ingredient[];
   recipe: string;
 }
 
-export const MealCard = ({ day, meal, nutrition, ingredients, recipe }: MealCardProps) => {
+export const MealCard = ({meal_name, nutritional_info, ingredients, recipe }: MealCardProps) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
   return (
@@ -30,8 +27,8 @@ export const MealCard = ({ day, meal, nutrition, ingredients, recipe }: MealCard
       <CollapsibleTrigger className="w-full">
         <div className="flex items-center justify-between p-4 bg-muted rounded-lg hover:bg-muted/80 transition-colors">
           <div className="flex items-center gap-4">
-            <span className="font-medium min-w-24">{day}</span>
-            <span>{meal}</span>
+            {/* <span className="font-medium min-w-24">{day}</span> */}
+            <span>{meal_name}</span>
           </div>
           {isExpanded ? (
             <ChevronUp className="h-5 w-5" />
@@ -45,10 +42,14 @@ export const MealCard = ({ day, meal, nutrition, ingredients, recipe }: MealCard
           <div>
             <h4 className="font-semibold mb-2">Nutrition Info</h4>
             <div className="grid grid-cols-2 gap-2">
-              <div>Protein: {nutrition.protein}</div>
-              <div>Carbs: {nutrition.carbs}</div>
-              <div>Fats: {nutrition.fats}</div>
-              <div>Quantity: {nutrition.quantity}</div>
+            <div>
+              {nutritional_info.map((macro, index) => (
+                <div key={index} className="flex justify-between">
+                  <div>{macro.macro}</div>
+                  <div>{macro.quantity}</div>
+                </div>
+              ))}
+            </div>
             </div>
           </div>
           <div>
@@ -56,7 +57,7 @@ export const MealCard = ({ day, meal, nutrition, ingredients, recipe }: MealCard
             <ul className="space-y-1">
               {ingredients.map((ing, idx) => (
                 <li key={idx}>
-                  {ing.name} - {ing.quantity}
+                  {ing.ingredient_name} - {ing.quantity}
                 </li>
               ))}
             </ul>

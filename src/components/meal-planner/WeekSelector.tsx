@@ -1,10 +1,8 @@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
-type WeekNumber = 1 | 2;
-
 interface WeekSelectorProps {
-  selectedWeek: WeekNumber;
-  onWeekChange: (week: WeekNumber) => void;
+  selectedWeek: number;
+  onWeekChange: (week: number) => void;
   weeks: number[];
 }
 
@@ -13,7 +11,7 @@ export const WeekSelector = ({ selectedWeek, onWeekChange, weeks }: WeekSelector
     <div className="mb-6">
       <Select
         value={selectedWeek.toString()}
-        onValueChange={(value) => onWeekChange(Number(value) as WeekNumber)}
+        onValueChange={(value) => onWeekChange(Number(value))}
       >
         <SelectTrigger className="w-[180px]">
           <SelectValue placeholder="Select week" />

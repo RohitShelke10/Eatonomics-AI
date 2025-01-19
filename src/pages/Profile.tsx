@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -13,6 +13,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+
+import {getCurrentUser, updateUser} from "../services/api"
 
 interface UserInfo {
   username: string;
@@ -32,6 +34,9 @@ interface UserInfo {
 const Profile = () => {
   const navigate = useNavigate();
   const [isEditing, setIsEditing] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [successMessage, setSuccessMessage] = useState("");
   const [userInfo, setUserInfo] = useState<UserInfo>({
     username: "John Doe",
     email: "john@example.com",
@@ -47,6 +52,30 @@ const Profile = () => {
     medicalConditions: "None"
   });
 
+  useEffect(() => {
+    const fetchUserData = async () => {
+      const accessToken = localStorage.getItem("token");
+      console.log(accessToken);
+      if (!accessToken) {
+        navigate("/login");
+        return;
+      }
+
+      const result = await getCurrentUser(accessToken);
+      console.log(result);
+      if (result.success) {
+        setUserInfo((prev) => ({
+          ...prev,
+          ...result.data, // Merge API data with existing defaults
+        }));
+      } else {
+        setError(result.message || "Failed to fetch user data");
+      }
+      setLoading(false);
+    };
+    fetchUserData();
+  }, [navigate]);
+
   const handleLogout = () => {
     localStorage.removeItem("token");
     toast.success("Logged out successfully");
@@ -55,26 +84,20 @@ const Profile = () => {
 
   const handleSave = async () => {
     // Example of how to use the API handler (commented out until API routes are added)
-    /*
-    const response = await fetch('/api/profile/update', {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(userInfo),
-    });
-
-    const result = await handleApiResponse<UserInfo>(response);
+    const accessToken = localStorage.getItem("token");
+    const result = await updateUser(userInfo, accessToken)
     
-    if (!result.error) {
+    if (result.success) {
       setIsEditing(false);
       toast.success("Profile updated successfully");
+    } else {
+      setIsEditing(false);
+      toast.error("Profile could not be updated");
     }
-    */
 
-    // Temporary implementation until API routes are added
-    setIsEditing(false);
-    toast.success("Profile updated successfully");
+
+
+  
   };
 
   return (
@@ -116,7 +139,7 @@ const Profile = () => {
                 disabled={!isEditing}
               />
             </div>
-            <div className="space-y-2">
+            {/* <div className="space-y-2">
               <label className="text-sm font-medium">Phone</label>
               <Input
                 type="tel"
@@ -126,7 +149,7 @@ const Profile = () => {
                 }
                 disabled={!isEditing}
               />
-            </div>
+            </div> */}
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <label className="text-sm font-medium">Age</label>

@@ -4,16 +4,13 @@ import { MealCard } from "./MealCard";
 
 interface MealListProps {
   meals: Array<{
-    day: string;
-    meal: string;
-    nutrition: {
-      protein: string;
-      carbs: string;
-      fats: string;
+    meal_name: string;
+    nutritional_info: Array<{
+      macro: string;
       quantity: string;
-    };
+    }>;
     ingredients: Array<{
-      name: string;
+      ingredient_name: string;
       quantity: string;
     }>;
     recipe: string;

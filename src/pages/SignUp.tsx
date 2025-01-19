@@ -23,6 +23,8 @@ import { motion } from "framer-motion";
 import { toast } from "sonner";
 import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
+import { registerUser } from "../services/api"
+import { useNavigate } from "react-router-dom"; 
 
 const formSchema = z.object({
   username: z.string().min(3).max(50),
@@ -46,7 +48,7 @@ const formSchema = z.object({
   ]),
   height: z.string(),
   weight: z.string(),
-  dietPreference: z.enum([
+  diet_preference: z.enum([
     "Omnivore",
     "Vegetarian",
     "Vegan",
@@ -55,14 +57,14 @@ const formSchema = z.object({
     "Kosher"
   ]),
   allergies: z.string(),
-  activityLevel: z.enum(["sedentary", "light", "moderate", "very_active"]),
+  activity_level: z.enum(["sedentary", "light", "moderate", "very_active"]),
   goal: z.enum(["weight_loss", "muscle_gain", "both"]),
-  medicalConditions: z.string(),
+  medical_conditions: z.string(),
 });
 
 const SignUp = () => {
   const [showPassword, setShowPassword] = useState(false);
-  
+  const navigate = useNavigate(); 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -70,22 +72,23 @@ const SignUp = () => {
       email: "",
       password: "",
       age: "",
-      sex: "Non-Binary",
+      sex: "Male",
       height: "",
       weight: "",
-      dietPreference: "Omnivore",
+      diet_preference: "Omnivore",
       allergies: "",
-      activityLevel: "moderate",
+      activity_level: "moderate",
       goal: "weight_loss",
-      medicalConditions: "",
+      medical_conditions: "",
     },
   });
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      // TODO: Implement API call
-      console.log(values);
+  
+      await registerUser(values);
       toast.success("Account created successfully!");
+      navigate("/login");
     } catch (error) {
       toast.error("Something went wrong. Please try again.");
     }
@@ -236,7 +239,7 @@ const SignUp = () => {
             </div>
             <FormField
               control={form.control}
-              name="dietPreference"
+              name="diet_preference"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Diet Preference</FormLabel>
@@ -277,7 +280,7 @@ const SignUp = () => {
             />
             <FormField
               control={form.control}
-              name="activityLevel"
+              name="activity_level"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Activity Level</FormLabel>
@@ -314,6 +317,7 @@ const SignUp = () => {
                       <SelectItem value="weight_loss">Weight Loss</SelectItem>
                       <SelectItem value="muscle_gain">Muscle Gain</SelectItem>
                       <SelectItem value="both">Both</SelectItem>
+                      <SelectItem value="stay_fit">Stay fit</SelectItem>
                     </SelectContent>
                   </Select>
                   <FormMessage />
@@ -322,7 +326,7 @@ const SignUp = () => {
             />
             <FormField
               control={form.control}
-              name="medicalConditions"
+              name="medical_conditions"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Medical Conditions</FormLabel>

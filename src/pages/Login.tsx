@@ -16,6 +16,7 @@ import { toast } from "sonner";
 import { Link, useNavigate } from "react-router-dom";
 import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
+import {loginUser} from "../services/api"
 
 const formSchema = z.object({
   username: z.string(),
@@ -37,9 +38,12 @@ const Login = () => {
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       // For now, we'll just set a mock token and redirect
-      localStorage.setItem("token", "mock-token");
-      toast.success("Logged in successfully!");
-      navigate("/chat");
+      const token = await loginUser(values.username, values.password)
+      if (token) {
+        localStorage.setItem("token", token);
+        toast.success("Logged in successfully!");
+        navigate("/chat");
+      }
     } catch (error) {
       toast.error("Something went wrong");
     }

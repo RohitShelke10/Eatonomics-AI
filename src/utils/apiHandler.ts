@@ -2,8 +2,7 @@ import { toast } from "sonner";
 
 export interface ApiResponse<T> {
   data: T | null;
-  error: string | null;
-  status: number;
+  message: string;
 }
 
 export const handleApiResponse = async <T>(
@@ -19,16 +18,14 @@ export const handleApiResponse = async <T>(
       
       return {
         data: null,
-        error: errorData.message || "Request failed",
-        status: response.status,
+        message: response['message'],
       };
     }
 
     const data = await response.json();
     return {
       data,
-      error: null,
-      status: response.status,
+      message: response['message'],
     };
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : "An unexpected error occurred";
@@ -36,8 +33,7 @@ export const handleApiResponse = async <T>(
     
     return {
       data: null,
-      error: errorMessage,
-      status: 500,
+      message: "Error"
     };
   }
 };

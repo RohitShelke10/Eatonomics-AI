@@ -1,84 +1,53 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { WeekSelector } from "@/components/meal-planner/WeekSelector";
 import { MealList } from "@/components/meal-planner/MealList";
 import { GroceryList } from "@/components/meal-planner/GroceryList";
 
-type WeekNumber = 1 | 2;
+// API functions (these should be implemented in your API utilities)
+import { fetchMeals, fetchWeek, fetchGroceryList } from "../services/api";
 
 const MealPlanner = () => {
-  const [selectedWeek, setSelectedWeek] = useState<WeekNumber>(1);
+  const [selectedWeek, setSelectedWeek] = useState(1);
   const [checkedItems, setCheckedItems] = useState<{ [key: string]: boolean }>({});
+  const [meals, setMeals] = useState([]);
+  const [groceries, setGroceries] = useState([]);
+  const [weekData, setWeekData] = useState([]);
+  const token = localStorage.getItem("token")
+  // Fetch the current week and data
+  useEffect(() => {
+    const getWeekData = async () => {
+      const week = await fetchWeek(token);  // Fetch the current week
+      const weeks = JSON.parse(week)
+      if (weeks.length != 0) {
+        setWeekData(weeks);
+        setSelectedWeek(weeks[0]);
+      }
+    };
+    
+    getWeekData();
+  }, []);
 
-  // Mock data with expanded information and week numbers
-  const weeklyData = {
-    1: {
-      meals: [
-        {
-          day: "Monday",
-          meal: "Grilled Chicken Salad",
-          nutrition: {
-            protein: "32g",
-            carbs: "15g",
-            fats: "12g",
-            quantity: "400g"
-          },
-          ingredients: [
-            { name: "Chicken breast", quantity: "200g" },
-            { name: "Mixed greens", quantity: "100g" },
-            { name: "Olive oil", quantity: "15ml" }
-          ],
-          recipe: "1. Season chicken breast\n2. Grill for 6-8 minutes each side\n3. Slice and serve over mixed greens\n4. Drizzle with olive oil"
-        },
-        {
-          day: "Tuesday",
-          meal: "Vegetable Stir Fry",
-          nutrition: {
-            protein: "15g",
-            carbs: "30g",
-            fats: "8g",
-            quantity: "350g"
-          },
-          ingredients: [
-            { name: "Mixed vegetables", quantity: "250g" },
-            { name: "Tofu", quantity: "100g" },
-            { name: "Soy sauce", quantity: "30ml" }
-          ],
-          recipe: "1. Cube tofu\n2. Stir fry vegetables\n3. Add tofu and sauce\n4. Cook until heated through"
-        },
-        {
-          day: "Wednesday",
-          meal: "Baked Salmon",
-          nutrition: {
-            protein: "42g",
-            carbs: "0g",
-            fats: "22g",
-            quantity: "300g"
-          },
-          ingredients: [
-            { name: "Salmon fillet", quantity: "200g" },
-            { name: "Lemon", quantity: "1 piece" },
-            { name: "Herbs", quantity: "10g" }
-          ],
-          recipe: "1. Preheat oven to 400°F\n2. Season salmon\n3. Bake for 12-15 minutes"
-        }
-      ],
-      groceries: [
-        { name: "Chicken breast", price: 8.99 },
-        { name: "Mixed greens", price: 3.99 },
-        { name: "Olive oil", price: 6.99 },
-        { name: "Mixed vegetables", price: 4.99 },
-        { name: "Tofu", price: 2.99 },
-        { name: "Soy sauce", price: 3.49 },
-        { name: "Salmon fillet", price: 12.99 },
-        { name: "Lemon", price: 0.99 },
-        { name: "Herbs", price: 1.99 }
-      ]
-    },
-    2: {
-      meals: [],
-      groceries: []
+  // Fetch meals and groceries for the selected week
+  useEffect(() => {
+    const getMealData = async () => {
+      const fetchedMeals = await fetchMeals(selectedWeek, token);  // Fetch meals for the selected week
+      if (JSON.parse(fetchedMeals).length != 0) {
+        setMeals(JSON.parse(fetchedMeals));
+      }
+    };
+
+    const getGroceryData = async () => {
+      const fetchedGroceries = await fetchGroceryList(selectedWeek, token);  // Fetch groceries for the selected week
+      if (fetchedGroceries) {
+        setGroceries(JSON.parse(fetchedGroceries).groceries);
+      }
+    };
+
+    if (weekData.length != 0) {
+      getMealData();
+      getGroceryData();
     }
-  };
+  }, [selectedWeek, weekData]);
 
   const toggleGroceryItem = (itemName: string) => {
     setCheckedItems(prev => ({
@@ -87,22 +56,31 @@ const MealPlanner = () => {
     }));
   };
 
-  const currentWeekData = weeklyData[selectedWeek];
-
   return (
     <div className="container mx-auto px-4 pt-24 pb-8 max-w-4xl">
       <WeekSelector
         selectedWeek={selectedWeek}
         onWeekChange={setSelectedWeek}
-        weeks={Object.keys(weeklyData).map(Number)}
+        weeks={weekData}  // Assume this will be just one week
       />
       <div className="space-y-8">
-        <MealList meals={currentWeekData.meals} />
-        <GroceryList
-          groceries={currentWeekData.groceries}
-          checkedItems={checkedItems}
-          onToggleItem={toggleGroceryItem}
-        />
+        {/* Render Meals or a message if the list is empty */}
+        {meals.length > 0 ? (
+          <MealList meals={meals} />
+        ) : (
+          <p className="text-center text-gray-500">No meals available for this week.</p>
+        )}
+
+        {/* Render Groceries or a message if the list is empty */}
+        {groceries.length > 0 ? (
+          <GroceryList
+            groceries={groceries}
+            checkedItems={checkedItems}
+            onToggleItem={toggleGroceryItem}
+          />
+        ) : (
+          <p className="text-center text-gray-500">No groceries available for this week.</p>
+        )}
       </div>
     </div>
   );

@@ -3,7 +3,8 @@ import { List } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 
 interface GroceryItem {
-  name: string;
+  ingredient_name: string;
+  quantity: string;
   price: number;
 }
 
@@ -35,11 +36,11 @@ export const GroceryList = ({ groceries, checkedItems, onToggleItem }: GroceryLi
             >
               <div className="flex items-center gap-3">
                 <Checkbox
-                  checked={checkedItems[item.name]}
-                  onCheckedChange={() => onToggleItem(item.name)}
+                  checked={checkedItems[item.ingredient_name]}
+                  onCheckedChange={() => onToggleItem(item.ingredient_name)}
                 />
-                <span className={checkedItems[item.name] ? "line-through" : ""}>
-                  {item.name}
+                <span className={checkedItems[item.ingredient_name] ? "line-through" : ""}>
+                  {item.ingredient_name}
                 </span>
               </div>
               <span className="font-medium">${item.price.toFixed(2)}</span>

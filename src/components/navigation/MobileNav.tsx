@@ -47,24 +47,6 @@ export const MobileNav = ({
               onClick={() => setIsOpen(false)}
             />
           ))}
-          {!isAuthenticated && (
-            <div className="space-y-1">
-              <Link
-                to="/login"
-                className="block px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:text-primary hover:bg-primary/5"
-                onClick={() => setIsOpen(false)}
-              >
-                Log in
-              </Link>
-              <Link
-                to="/signup"
-                className="block px-3 py-2 rounded-md text-base font-medium bg-primary text-white hover:bg-primary/90"
-                onClick={() => setIsOpen(false)}
-              >
-                Sign up
-              </Link>
-            </div>
-          )}
         </div>
       </div>
     </>
