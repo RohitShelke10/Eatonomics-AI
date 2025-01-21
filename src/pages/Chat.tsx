@@ -33,7 +33,7 @@ const Chat = () => {
   
       try {
         // Make the API call
-        const response = await fetch("http://localhost:8000/chat/reply", {
+        const response = await fetch("http://127.0.0.1:8000/chat/reply", {
           method: "POST",
           headers: { "Content-Type": "application/json",
             'Authorization': `Bearer ${token}`},
